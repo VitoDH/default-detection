@@ -1,4 +1,5 @@
-# Default Detection on P2P lending
+Default Detection on P2P lending
+
 #### **Author**: Dehai Liu
 
 **Department of Mathematics, Sun Yat-Sen University**
@@ -64,42 +65,39 @@ This project mainly focus on data mining in the P2P lending data. Based on LDA t
 
 ### (a) Load the data
 
-* Load use_log.csv and user_info.csv
-* Remove the data points including NA in user_info
-* Load train_format1.csv, pick a subset of 100,000 samples and denote it as trainSet
+* Load p2pData.csv
+
+Note : the irrelevant feature in the raw data has been removed
 
 
 
 ### (b) Outlier Detection
 
-Since the existence of click farming, we need to find out the user and the merchant with unusual clicking behavior and then remove them from the trainSet. Here we offer the scatterplot of  four actions  for users and merchants, respectively.
+We only perform outlier detection on continuous variables **target value** and **age** with Tukey Mehod, i.e defining the data points out of 1.5 times the Interquartile range as outleir.
 
 
 
-**User**
+**Target Value**
 
-<img src="https://github.com/VitoDH/repeated_buyers/raw/master/img/scatter_plot_1.png" style="zoom:90%" />
+*  Before removing the outlier
 
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/with_outlier_Target.png" style="zoom:60%" />
 
+* After removing the outlier
 
-**Merchant(Seller)**
-
-<img src="https://github.com/VitoDH/repeated_buyers/raw/master/img/scatter_plot_2.png" style="zoom:90%" />
-
-Based on the distribution above, we define the data to be an outlier if it exceeds the threshold below:
-
-|                 |  User  | Merchant |
-| :-------------: | :----: | :------: |
-|      Click      | > 4000 | > 200000 |
-|   Add to Cart   |  None  |  > 250   |
-|       Buy       | > 100  | > 10000  |
-| Add to favorite | >  450 | > 10000  |
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/without_outlier_Target.png" style="zoom:60%" />
 
 
 
-After removing the outlier of users and merchants, we still have **90917** samples in training set.
+**Age**
 
+* Before removing the outlier
 
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/with_outlier_Age.png" style="zoom:60%" />
+
+* After removing the outlier
+
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/without_outlier_Age.png" style="zoom:60%" />
 
 
 
