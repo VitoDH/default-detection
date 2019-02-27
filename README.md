@@ -1,4 +1,4 @@
-# Predicting Potential Repeated Buyers
+# Default Detection on P2P lending
 #### **Author**: Dehai Liu
 
 **Department of Mathematics, Sun Yat-Sen University**
@@ -7,49 +7,56 @@
 
 ## 1. Abstract
 
-Our project mainly focus on digging out the potential online repeated-buyers with data-driven methods and state-of-the-art algorithms. It can not only provide guidance for the sellers about their operation,but also help the online shopping platform to pinpoint the target customers for advertisements and coupons.
+This project mainly focus on data mining in the P2P lending data. Based on LDA topic model, we can extract information from the loan statement given by the borrower. Combined with the traditional features (gender,age,target value,etc) in default detection, we are able to predict the probability of default with random forest, which demonstrates high accuracy and straightforward interpretation.
 
 
 
 ## 2. Data Description
 
-`T-mall` is one of the largest online shopping platform in China.  On November 11th, "the Single Day", the trading volume on T-mall reaches 120 billion CNY, indicating tremendous profit behind this shopping festival. In this project, our data includes the shopping records of the buyers for six months before the and on the Single Day. The data is divided into **3** parts as follows:
+`Ren Ren Dai`(https://www.renrendai.com/) is one of the largest online P2P lending platform in China.  Using the crawling software Octopus, we could obtain around 10,000 records of online lending with the 20 features and 1 label (default or not default) :
 
 
 
-**User Log**
+**Lending Hard Information**
 
-| Attributes  |                      Definitions                      |
-| :---------: | :---------------------------------------------------: |
-|   user_id   |                  Unique ID for user                   |
-|   item_id   |                Unique ID for commodity                |
-|   cat_id    |        Unique ID for the category of the good         |
-| merchant_id |              Unique ID for the merchant               |
-|  brand_id   |                Unique ID for the brand                |
-| time_stamp  |         The date of action given by customer          |
-| action_type | 0:click, 1: add to cart, 2: order, 3: add to favorite |
+|   Attributes   |          Definitions           |
+| :------------: | :----------------------------: |
+| interest rate  | the interest rate of the loan  |
+|  target value  |     the amount of the loan     |
+| lending period | the period of holding the loan |
 
 
 
-**User Info**
+**Lending Soft Information**
 
-| Attributes |                         Definitions                          |
-| :--------: | :----------------------------------------------------------: |
-|  user_id   |                      Unique ID for user                      |
-| age_range  | 1: < 18, 2: [18,24], 3: [25:29], 4: [30,34], 5: [35,39], 6: [40,49], 7: >=50, 0: unknown |
-|   gender   |                 0: female, 1: male, 2: NULL                  |
-
-
-
-**Training Set and Test Set**
-
-| Attributes  |                Definitions                 |
-| :---------: | :----------------------------------------: |
-|   user_id   |             Unique ID for user             |
-| merchant_id |           Unique ID for merchant           |
-|    label    | 1: repeated buyers, 0: non-repeated buyers |
+|    Attributes    |                         Definitions                          |
+| :--------------: | :----------------------------------------------------------: |
+| repayment method | 1: pay interest first 2: pay interest and principal together |
+|  property loan   |     1: short-term turnover 2: personal consumption ....      |
+|  loan statement  |          the statement for loan before application           |
 
 
+
+**Lending Personal Info**
+
+|   Attributes    |                    Definitions                    |
+| :-------------: | :-----------------------------------------------: |
+|       age       |                continuous variable                |
+|     gender      |            0: female, 1: male, 2: NULL            |
+|    education    | 1: high school 2: junior college 3: undergrad ... |
+|    marriage     |     1: divorce 2: married 3: single 4: widow      |
+| census register |                 province in China                 |
+|     income      |             1: <1000 2: 1000-2000 ...             |
+| house property  |                   1: yes 0: no                    |
+|   house loan    |                   1: yes 0: no                    |
+|       car       |                   1: yes 0: no                    |
+|    car_loan     |                   1: yes 0: no                    |
+|  type company   |                  type of company                  |
+|    industry     |                 1: IT 2: food ...                 |
+|  scale company  |        (# of staffs) 1: <10 2: 10-100 ...         |
+|    type job     |                    type of job                    |
+|    workplace    |                the location of job                |
+|    time job     |            1: <1 year 2: 1-3 years ...            |
 
 
 
