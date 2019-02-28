@@ -137,18 +137,24 @@ Scale the continuous variable to  [0,1] using the following formula:
 
 LDA refers to **Latent Dirichlet Allocation**. In the LDA context, the process of generating a document can be viewed as follows:
 
-* From the latent Dirichlet Distribution <img src="https://latex.codecogs.com/svg.latex?\Large&space;\alpha" title="" />, we obtain the the topic distribution <img src="https://latex.codecogs.com/svg.latex?\Large&space;\theta" title="" /> of document <img src="https://latex.codecogs.com/svg.latex?\Large&space;d" title="" />
+* From the latent Dirichlet Distribution alpha, we obtain the the topic distribution theta of document d
 
-* From <img src="https://latex.codecogs.com/svg.latex?\Large&space;\theta" title="" />, we can generate the topic <img src="https://latex.codecogs.com/svg.latex?\Large&space;z" title="" /> for the word in position <img src="https://latex.codecogs.com/svg.latex?\Large&space;n" title="" /> 
-* From another  latent Dirichlet Distribution <img src="https://latex.codecogs.com/svg.latex?\Large&space;\eta" title="" />, generate the word distribution  <img src="https://latex.codecogs.com/svg.latex?\Large&space;\beta" title="" /> for the topic  <img src="https://latex.codecogs.com/svg.latex?\Large&space;z" title="" /> 
+* From theta, we can generate the topic z for the word in position n 
+* From another  latent Dirichlet Distribution eta, generate the word distribution beta for the topic z 
 
-* Generate the word  <img src="https://latex.codecogs.com/svg.latex?\Large&space;w_{d,n}" title="" />  from  <img src="https://latex.codecogs.com/svg.latex?\Large&space;\beta" title="" /> 
+* Generate the word  w_dn  from beta 
 
 
 
 Supposed we have defined the number of topics as  **<img src="https://latex.codecogs.com/svg.latex?\Large&space;n" title="" />**, then by LDA we could obtain a topic vector for each **loan statement** denoting the the probability of the statement being assigned to each topic:
 
- <img src="https://latex.codecogs.com/svg.latex?\Large&space;P_m=\left\{P_{m,1},\cdots,P_{m,n}\right\}" title="" />  . This vector can been seen as features of topics and can be combined with the features in part 2.
+
+
+ <img src="https://latex.codecogs.com/svg.latex?\Large&space;P_m=\left\{P_{m,1},\cdots,P_{m,n}\right\}" title="" />  . 
+
+
+
+This vector can been seen as features of topics and can be combined with the features in part 2.
 
 
 
@@ -166,7 +172,7 @@ Here I use perplexity as the metric for selecting the number of topics. This con
 
 
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/train_perp.png" style="zoom:50%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/train_perp.png" style="zoom:40%" />
 
 From the plot above,  pick the number of topic n to be 40. The features in the topic vector are denoted as Topic1, Topic2, ..., Topic 40.
 
@@ -188,13 +194,13 @@ Here I provide the importance of features of two model:
 
 * Model without LDA
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/var_imp_big.png" style="zoom:50%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/var_imp_big.png" style="zoom:40%" />
 
 
 
 * Model with LDA
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/var_imp_topic_big.png" style="zoom:50%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/var_imp_topic_big.png" style="zoom:40%" />
 
 
 
@@ -246,7 +252,7 @@ Basically, Topic 1 is relevant to the loan, Topic 34 is relevant to the attitude
 
 * Select the number of trees in random forest: **ntree**
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/ntree_selection_topic.png" style="zoom:50%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/ntree_selection_topic.png" style="zoom:40%" />
 
 When ntree is larger than 100, the error has already been steady. Thus, I choose ntree=100.
 
@@ -254,7 +260,7 @@ When ntree is larger than 100, the error has already been steady. Thus, I choose
 
 * Select the number of candidate features at each split: **mtry**
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/mtry_selection_topic.png" style="zoom:50%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/mtry_selection_topic.png" style="zoom:40%" />
 
 The OOB error is minimized when mtry=3. Hence, I pick mtry to be 3.
 
@@ -262,15 +268,15 @@ The OOB error is minimized when mtry=3. Hence, I pick mtry to be 3.
 
 * Select the number of leaves: **maxnodes**
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_accuracy_topic.png" style="zoom:50%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_accuracy_topic.png" style="zoom:40%" />
 
 
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_f1score_topic.png" style="zoom:50%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_f1score_topic.png" style="zoom:40%" />
 
 
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_auc_topic.png" style="zoom:50%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_auc_topic.png" style="zoom:40%" />
 
 
 
@@ -284,7 +290,7 @@ Based on the metrics accuracy, F1 score and AUC, I pick maxnode to be 400. Here,
 
 The ROC curve on the test set is given as:
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/roc_test_topic.png" style="zoom:50%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/roc_test_topic.png" style="zoom:40%" />
 
  
 
