@@ -1,3 +1,5 @@
+
+
 # Default Detection on P2P lending
 
 #### **Author**: Dehai Liu
@@ -14,7 +16,7 @@ This project mainly focus on data mining in the P2P lending data. Based on LDA t
 
 ## 2. Data Description
 
-`Ren Ren Dai`(https://www.renrendai.com/) is one of the largest online P2P lending platform in China.  Using the crawling software Octopus, we could obtain around 10,000 records of online lending with the 20 features and 1 label (default or not default) :
+`Ren Ren Dai`(https://www.renrendai.com/) is one of the largest online P2P lending platform in China.  Using the crawling software Octopus, I obtain around 10,000 records of online lending with the 20 features and 1 label (default or not default) :
 
 
 
@@ -73,7 +75,7 @@ Note : the irrelevant feature in the raw data has been removed
 
 ### (b) Outlier Detection
 
-We only perform outlier detection on continuous variables **target value** and **age** with Tukey Mehod, i.e defining the data points out of 1.5 times the Interquartile range as outleir.
+Perform outlier detection on continuous variables **target value** and **age** with Tukey Mehod, i.e defining the data points out of 1.5 times the Interquartile range as outleir.
 
 
 
@@ -99,201 +101,221 @@ We only perform outlier detection on continuous variables **target value** and *
 
 <img src="https://github.com/VitoDH/default-detection/raw/master/img/without_outlier_Age.png" style="zoom:60%" />
 
+The distribution of the features become less skewed after removing the outliers.
 
 
 
+### (c) Missing Values
 
-## 4. Feature Engineering
-
-### a. Direct Link
-
-Given a specific buyer and seller, it's not difficult to find out the times of the four actions that the buyers have done in the store of the merchants. Here we define a 6-dimension vector to denote the direct link between the user and the merchant:
-
-<img src="https://latex.codecogs.com/svg.latex?\Large&space;v_d=(gender,age,click,cart,buy,favorite)" title="\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}" />
-
-### b. Indirect Link
-
-##### (1) First we define the weight for different action types:
-
-|     Action      | Value | Times | Weight |
-| :-------------: | :---: | :---: | :----: |
-|      Click      |   0   |  n_1  |  0.1   |
-|   Add to Cart   |   1   |  n_2  |  0.2   |
-|       Buy       |   2   |  n_3  |  0.3   |
-| Add to Favorite |   3   |  n_4  |  0.4   |
+* For ordinal variables, impute the missing values with the median.
+* For categorical variables without order, remove them directly since they are just a small portion of the samples.
 
 
 
-##### (2) Vitality and Popularity
+### (d) Scaling
 
-Vitality is used to measure the extent of how much the user loves shopping. Popularity refers to how attractive the merchant's commodity is. They are both calculated by the weighted average of the four actions. And they can be specifically defined as **category vitality**, **brand vitality** for the user and **category popularity**, **brand popularity** for the merchant.
-
-
-
-Now we illustrate the calculation by taking the **category vitality** as an example.
-
-
-
-The score of a good<img src="https://latex.codecogs.com/svg.latex?\Large&space;j" title="\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}" /> for a given user <img src="https://latex.codecogs.com/svg.latex?\Large&space;i" title="\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}" /> is
-
-
-
-<img src="https://latex.codecogs.com/svg.latex?\Large&space;score_{ij}=0.1*n_1+0.2*n_2+0.3*n_3+0.4*n_4" title="\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}" />
-
-
-
-The  **category vitality** of user <img src="https://latex.codecogs.com/svg.latex?\Large&space;i" title="\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}" /> is
-
-
-
-<img src="https://latex.codecogs.com/svg.latex?\Large&space;S_{cat-vitality}^i=mean(score_{ij})" title="\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}" />
-
-
-
-where <img src="https://latex.codecogs.com/svg.latex?\Large&space;n_i" title="\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}" /> refers the item that is relevant to the user <img src="https://latex.codecogs.com/svg.latex?\Large&space;i" title="\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}" />.
-
-
-
-Similarly, we can calculate the other three indicators and combine them into a 4-dimension vector.
-
-  
-
-
-
-
-
-
-
-
-
-
-
-### c. Normalization
-
-After setting up the features, we find out the each feature have different scales. Thus, it would be reasonable to scale the attributes to [0,1] using the following formula:
+Scale the continuous variable to  [0,1] using the following formula:
 
 <img src="https://latex.codecogs.com/svg.latex?\Large&space;\frac{x_i-min(x_i)}{max(x_i)-min(x_i)}" title="\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}" />
 
 
 
-### d. PCA
+### (e) Split the Data Set and Balance
 
-Based on part a and b, we have obtained **10** features. In order to simplify the training process and remove useless information, we perform PCA on the training set. The scree plot and the variance of components are given as follows:
-
- <img src="https://github.com/VitoDH/repeated_buyers/raw/master/img/scree_plot.png" style="zoom:90%" />
-
-<img src="https://github.com/VitoDH/repeated_buyers/raw/master/img/pca_var.png" style="zoom:90%" />
-
-
-
-Noting that the cumulative proportion has reach **0.94** on the 4th principal component, we can simply pick the first four principal components as our attributes for training.
+* Split the dataset into 3 parts, 70% for training set, 15% for validation set and 15% fir test set
+* The samples labeled as default only account for 10% of the whole dataset. Thus, the data is obviously imbalanced. Here I address this problem by using SMOTE algorithm to generate a balanced dataset.
 
 
 
 
 
-## 5. Balance 
+## 4. Topic Model - LDA
 
-Taking a glance at the distribution of the label, 
+#### (a) Feature Engineering
 
-|        Type        | Number |
-| :----------------: | :----: |
-|    Total Sample    | 90917  |
-| Positive Label (1) |  5363  |
-| Negative Label (0) | 85554  |
-|   Number of User   | 75053  |
-| Number of Merchant |  1982  |
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/LDA.png" style="zoom:110%" />
 
+LDA refers to **Latent Dirichlet Allocation**. In the LDA context, the process of generating a document can be viewed as follows:
 
+* From the latent Dirichlet Distribution <img src="https://latex.codecogs.com/svg.latex?\Large&space;\alpha" title="" />, we obtain the the topic distribution <img src="https://latex.codecogs.com/svg.latex?\Large&space;\theta" title="" /> of document <img src="https://latex.codecogs.com/svg.latex?\Large&space;d" title="" />
 
-From the above table, the positive samples only covers 5.9% of the total samples, which will easily lead to a situation that all the positive label will be classified as negative.
+* From <img src="https://latex.codecogs.com/svg.latex?\Large&space;\theta" title="" />, we can generate the topic <img src="https://latex.codecogs.com/svg.latex?\Large&space;z" title="" /> for the word in position <img src="https://latex.codecogs.com/svg.latex?\Large&space;n" title="" /> 
+* From another  latent Dirichlet Distribution <img src="https://latex.codecogs.com/svg.latex?\Large&space;\eta" title="" />, generate the word distribution  <img src="https://latex.codecogs.com/svg.latex?\Large&space;\beta" title="" /> for the topic  <img src="https://latex.codecogs.com/svg.latex?\Large&space;z" title="" /> 
 
-We use four ways of sampling to address this problem and obtain a balance dataset.
+* Generate the word  <img src="https://latex.codecogs.com/svg.latex?\Large&space;w_{d,n}" title="" />  from  <img src="https://latex.codecogs.com/svg.latex?\Large&space;\beta" title="" /> 
 
 
 
-|     Label      |   0   |   1   |
-| :------------: | :---: | :---: |
-|      Raw       | 84700 | 5300  |
-| Over Sampling  | 84700 | 84700 |
-| Under Sampling | 5300  | 5300  |
-| Over and Under | 44959 | 45041 |
-|     SMOTE      | 44959 | 45041 |
+Supposed we have defined the number of topics as  **<img src="https://latex.codecogs.com/svg.latex?\Large&space;n" title="" />**, then by LDA we could obtain a topic vector for each **loan statement** denoting the the probability of the statement being assigned to each topic:
+
+ <img src="https://latex.codecogs.com/svg.latex?\Large&space;P_m=\left\{P_{m,1},\cdots,P_{m,n}\right\}" title="" />  . This vector can been seen as features of topics and can be combined with the features in part 2.
+
+
+
+The pipeline for obtaining this vector is as follows:
+
+* Split the sentence into words (by Ansj for Chinese version), remove stopwords and meaningless noise
+* Gibbs Sampling until convergence occurs
+* Obtain the topic vector
+
+
+
+#### (b) Choosing the number of topics
+
+Here I use perplexity as the metric for selecting the number of topics. This concept is put forward by the author of LDA, Blei. Perplexity represents the ability of generalization of the model. The smaller the perplexity, the better performance in generalization.
+
+
+
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/train_perp.png" style="zoom:50%" />
+
+From the plot above,  pick the number of topic n to be 40. The features in the topic vector are denoted as Topic1, Topic2, ..., Topic 40.
 
 
 
 
 
-## 6. Training with XG Boost
+## 5. Random Forest
 
-XG Boost is an cutting-edge algorithm derived from GBDT , which can deal with missing data and avoid overfitting.
-
-### a. Parametrization
-
-|    Parameters     |  Value   |
-| :---------------: | :------: |
-|     max_depth     |    5     |
-|   learning_rate   |   0.1    |
-|     max_iter      |   800    |
-| learning_function | logistic |
+Random Forest is a robust classifier which is easy to interpret  and implement.
 
 
 
-### b. Performance under different sampling
+### (a) Feature Selection
 
-#### (1) Over Sampling
+In this part, I mainly select the top 10 features based on the metrics of Mean Decrease Accuracy and Mean Decrease Gini.
 
-<img src="https://github.com/VitoDH/repeated_buyers/raw/master/img/xg_over_sample.png" style="zoom:90%" />
+Here I provide the importance of features of two model:
 
-|               | **Train** | **Test** |
-| :-----------: | :-------: | :------: |
-| **Precision** |   0.783   |  0.128   |
-|  **Recall**   |   0.846   |  0.444   |
-| **F1 Score**  |   0.814   |  0.200   |
-| **F2 Score**  |   0.832   |  0.297   |
-|    **AUC**    |   0.885   |  0.603   |
+* Model without LDA
+
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/var_imp_big.png" style="zoom:50%" />
 
 
 
-#### (2) Under Sampling
+* Model with LDA
 
-<img src="https://github.com/VitoDH/repeated_buyers/raw/master/img/xg_under_sample.png" style="zoom:90%" />
-
-|               | **Train** | **Test** |
-| :-----------: | :-------: | :------: |
-| **Precision** |   0.833   |   0.08   |
-|  **Recall**   |   0.862   |  0.667   |
-| **F1 Score**  |   0.848   |  0.144   |
-| **F2 Score**  |   0.856   |  0.270   |
-|    **AUC**    |   0.929   |  0.549   |
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/var_imp_topic_big.png" style="zoom:50%" />
 
 
 
-#### (c) Both
-
-<img src="https://github.com/VitoDH/repeated_buyers/raw/master/img/xg_both.png" style="zoom:90%" />
-
-|               | **Train** | **Test** |
-| :-----------: | :-------: | :------: |
-| **Precision** |   0.817   |  0.119   |
-|  **Recall**   |   0.846   |  0.460   |
-| **F1 Score**  |   0.832   |  0.190   |
-| **F2 Score**  |   0.839   |  0.293   |
-|    **AUC**    |   0.909   |  0.609   |
+I notice that the topic features play a important role in the model. (eg, Topic 34 and Topic 1)
 
 
 
-#### (d) SMOTE
+The 10 features  selected are as follows:
 
-<img src="https://github.com/VitoDH/repeated_buyers/raw/master/img/xg_smote.png" style="zoom:90%" />
+**Best Features Set**
 
-|               | **Train** | **Test** |
-| :-----------: | :-------: | :------: |
-| **Precision** |   0.727   |  0.143   |
-|  **Recall**   |   0.687   |  0.460   |
-| **F1 Score**  |   0.706   |  0.218   |
-| **F2 Score**  |   0.695   |  0.318   |
-|    **AUC**    |   0.789   |  0.641   |
+|    Attributes    |                    Definitions                    |
+| :--------------: | :-----------------------------------------------: |
+|    education     | 1: high school 2: junior college 3: undergrad ... |
+|  property loan   |               property of the loan                |
+|  scale company   |        (# of staffs) 1: <10 2: 10-100 ...         |
+| statement length |         the length of the loan statement          |
+|      target      |              the amount of the loan               |
+|       term       |          the holding period of the loan           |
+|     time job     |            1: <1 year 2: 1-3 years ...            |
+|      Topic1      |                                                   |
+|     Topic34      |                                                   |
+|     Topic39      |                                                   |
+
+
+
+It's interesting to take a look at what words are included in the topics that I selected:
+
+|     Topic 1      |    Topic 34     |     Topic 39     |
+| :--------------: | :-------------: | :--------------: |
+| 还款(Repayment)  |   希望(Hope)    | 投资(Investment) |
+|   信用(Credit)   |    想(Want)     |  生意(Business)  |
+|   工资(Salary)   | 还款(Repayment) |  资金(Capital)   |
+|  逾期(Overdue)   |  谢谢(Thanks)   |   开(Start up)   |
+|   房屋(House)    |   申请(Apply)   |  周转(Turnover)  |
+|  能力(Ability)   |  资金(Capital)  | 有限公司(Co,Ltd) |
+| 短期(Short-term) |   房子(House)   |    一家(One)     |
+|  周转(Turnover)  |  支持(Support)  |   销售(Sales)    |
+| 打卡(Attendence) |    钱(Money)    |   朋友(Friend)   |
+|   来源(Source)   | 平台(Platform)  |    银行(Bank)    |
+
+Note: The loan statements are all written in Chinese.
+
+Basically, Topic 1 is relevant to the loan, Topic 34 is relevant to the attitude of borrower and Topic 39 relates to investment.
+
+
+
+### (b) Tuning the parameters
+
+* Select the number of trees in random forest: **ntree**
+
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/ntree_selection_topic.png" style="zoom:50%" />
+
+When ntree is larger than 100, the error has already been steady. Thus, I choose ntree=100.
+
+
+
+* Select the number of candidate features at each split: **mtry**
+
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/mtry_selection_topic.png" style="zoom:50%" />
+
+The OOB error is minimized when mtry=3. Hence, I pick mtry to be 3.
+
+
+
+* Select the number of leaves: **maxnodes**
+
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_accuracy_topic.png" style="zoom:50%" />
+
+
+
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_f1score_topic.png" style="zoom:50%" />
+
+
+
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_auc_topic.png" style="zoom:50%" />
+
+
+
+Based on the metrics accuracy, F1 score and AUC, I pick maxnode to be 400. Here, I take the complexity of the model into consideration. When maxnode is larger than 400, the improvement of the performance is not significant.
+
+
+
+## 6. Evaluation
+
+### (a) Test Set Performance
+
+The ROC curve on the test set is given as:
+
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/roc_test_topic.png" style="zoom:50%" />
+
+ 
+
+The comparison of performance on validation set and test set:
+
+|    Metrics     | Accuracy | Precision | Recall | F1 Score |  AUC   |
+| :------------: | :------: | :-------: | :----: | :------: | :----: |
+| Validation Set |  0.9172  |  0.5853   | 0.9955 |  0.7372  | 0.9595 |
+|    Test Set    |  0.9297  |  0.6254   | 0.9911 |  0.7668  | 0.9564 |
+
+
+
+Noting that the test set has equivalent performance to the validation set, we can conclude that the model successfully generalizes to out-of-sample data.
+
+
+
+### (b) Test Set Comparison Between Two Models
+
+To further demonstrate the power of LDA, we can compare that performance of the two models on test set:
+
+|       Metrics        | Accuracy | Precision | Recall | F1 Score |  AUC   |
+| :------------------: | :------: | :-------: | :----: | :------: | :----: |
+|     Without LDA      |  0.9157  |  0.5850   | 0.9550 |  0.7250  | 0.9330 |
+|       With LDA       |  0.9297  |  0.6254   | 0.9911 |  0.7668  | 0.9564 |
+| Percentage Increased |  1.54%   |   6.9%    | 3.77%  |  5.77%   | 2.51%  |
+
+Each metric has been improved when we incorporate the topic vectors into the features. Thus, LDA model has a significant impact on the improvement of the feature set.
+
+
+
+
 
 
 
@@ -301,7 +323,7 @@ XG Boost is an cutting-edge algorithm derived from GBDT , which can deal with mi
 
 From the results above, we are able to conclude that:
 
-* Model successfully captures the information in the dataset, represented by high F1 score and AUC in the training set.
-* Model can be used to detect whether a buyer will come back again to a specific online store as long as the data between them is given.
-* For improvement in the test set, we need to focus more on the feature engineering part and the sampling part.
+* Model successfully captures the information in the dataset. Even without LDA, random forest has achieved satisfying accuracy on the test set.
+* LDA demonstrates its power in the natural language processing. It provides insight for mining the information in the loan statement. And hence the performance of the model increases.
+* The features relevant to job and the loan statement play an important role in predicting the probability of default in P2P lending.
 
