@@ -172,7 +172,7 @@ Here I use perplexity as the metric for selecting the number of topics. This con
 
 
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/train_perp.png" style="zoom:40%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/train_perp.png" style="zoom:30%" />
 
 From the plot above,  pick the number of topic n to be 40. The features in the topic vector are denoted as Topic1, Topic2, ..., Topic 40.
 
@@ -194,13 +194,13 @@ Here I provide the importance of features of two model:
 
 * Model without LDA
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/var_imp_big.png" style="zoom:40%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/var_imp_big.png" style="zoom:30%" />
 
 
 
 * Model with LDA
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/var_imp_topic_big.png" style="zoom:40%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/var_imp_topic_big.png" style="zoom:30%" />
 
 
 
@@ -252,7 +252,7 @@ Basically, Topic 1 is relevant to the loan, Topic 34 is relevant to the attitude
 
 * Select the number of trees in random forest: **ntree**
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/ntree_selection_topic.png" style="zoom:40%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/ntree_selection_topic.png" style="zoom:30%" />
 
 When ntree is larger than 100, the error has already been steady. Thus, I choose ntree=100.
 
@@ -260,7 +260,7 @@ When ntree is larger than 100, the error has already been steady. Thus, I choose
 
 * Select the number of candidate features at each split: **mtry**
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/mtry_selection_topic.png" style="zoom:40%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/mtry_selection_topic.png" style="zoom:30%" />
 
 The OOB error is minimized when mtry=3. Hence, I pick mtry to be 3.
 
@@ -268,15 +268,15 @@ The OOB error is minimized when mtry=3. Hence, I pick mtry to be 3.
 
 * Select the number of leaves: **maxnodes**
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_accuracy_topic.png" style="zoom:40%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_accuracy_topic.png" style="zoom:30%" />
 
 
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_f1score_topic.png" style="zoom:40%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_f1score_topic.png" style="zoom:30%" />
 
 
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_auc_topic.png" style="zoom:40%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/maxnode_auc_topic.png" style="zoom:30%" />
 
 
 
@@ -290,7 +290,7 @@ Based on the metrics accuracy, F1 score and AUC, I pick maxnode to be 400. Here,
 
 The ROC curve on the test set is given as:
 
-<img src="https://github.com/VitoDH/default-detection/raw/master/img/roc_test_topic.png" style="zoom:40%" />
+<img src="https://github.com/VitoDH/default-detection/raw/master/img/roc_test_topic.png" style="zoom:30%" />
 
  
 
